@@ -5,7 +5,7 @@ const fs = require('fs').promises;
 const path = require('path');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const dbPath = path.join(__dirname, 'data', 'db.json');
 const uploadsPath = path.join(__dirname, 'data', 'uploads');
