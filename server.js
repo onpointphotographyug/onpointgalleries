@@ -13,7 +13,7 @@ const uploadsPath = path.join(__dirname, 'data', 'uploads');
 // --- Middleware ---
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'docs')));
 app.use('/uploads', express.static(uploadsPath));
 
 // --- Multer Setup for file uploads ---
