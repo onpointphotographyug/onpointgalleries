@@ -7,8 +7,11 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const dbPath = path.join(__dirname, 'data', 'db.json');
-const uploadsPath = path.join(__dirname, 'data', 'uploads');
+// Use Render's persistent disk for data storage if available
+const isRender = process.env.RENDER === 'true';
+const dataRoot = isRender ? '/var/data' : path.join(__dirname, 'data');
+const dbPath = path.join(dataRoot, 'db.json');
+const uploadsPath = path.join(dataRoot, 'uploads');
 
 // --- Middleware ---
 app.use(cors());
@@ -185,7 +188,18 @@ app.put('/api/photos/:id/favorite', async (req, res) => {
     }
 });
 
+// Function to ensure storage directories exist on startup
+async function ensureDirectories() {
+    try {
+        await fs.mkdir(uploadsPath, { recursive: true });
+        console.log("Storage directories are ready.");
+    } catch (error) {
+        console.error("Fatal error: Could not create storage directories.", error);
+        process.exit(1); // Exit if we can't create necessary folders
+    }
+}
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+    await ensureDirectories();
     console.log(`Server running on http://localhost:${PORT}`);
 }); 
